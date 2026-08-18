@@ -270,6 +270,44 @@
             display: none !important;
         }
     </style>
+    <style>
+        /* Styling Tombol Musik (Kiri Bawah Card) */
+        .music-toggle-btn {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a855f7, #8b3dff);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(139, 61, 255, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+            z-index: 10;
+        }
+
+        .music-toggle-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 16px rgba(139, 61, 255, 0.45);
+        }
+
+        .music-toggle-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Efek Muted/Paused */
+        .music-toggle-btn.paused {
+            background: #e9d5ff;
+            color: #8b3dff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+    </style>    
 </head>
 <body>
 
@@ -394,7 +432,7 @@
                 </div>
             </div>
         </div>
-   </div>
+        </div>
 
           <!-- STEP 7: SLIDE BARU -->
         <div id="step7" class="halaman">
@@ -409,7 +447,49 @@
                 </div>
                 <!-- Tombol ini opsi untuk mengulang dari awal ke STEP 1 -->
                 <button class="btn-purple" onclick="nextStep(7, 1)">🔄 Ulangi dari Awal</button>
+            </div>
         </div>
+        <!-- Audio Element -->
+        <audio id="bg-music" loop>
+            <source src="lagu17.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- Tombol Play/Pause Musik -->
+        <button id="music-btn" class="music-toggle-btn" onclick="toggleMusic()">
+            <span id="music-icon">🎵</span>
+        </button>
+        <script>
+            const audio = document.getElementById("bg-music");
+            const musicBtn = document.getElementById("music-btn");
+            const musicIcon = document.getElementById("music-icon");
+
+            function toggleMusic() {
+            if (audio.paused) {
+                audio.play();
+                musicIcon.textContent = "🎵";
+                musicBtn.classList.remove("paused");
+            } else {
+                audio.pause();
+                musicIcon.textContent = "🔇";
+                musicBtn.classList.add("paused");
+            }
+            }
+
+            // Opsional: Autoplay saat user pertama kali klik di mana saja pada layar
+            document.addEventListener('click', function startAudioOnInteraction() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                musicIcon.textContent = "🎵";
+                musicBtn.classList.remove("paused");
+                }).catch(() => {
+                // Jika terblokir browser, tombol tetap siap dipencet manual
+                musicIcon.textContent = "🔇";
+                musicBtn.classList.add("paused");
+                });
+            }
+            }, { once: true });
+        </script>
+    </div>
 
         
 
