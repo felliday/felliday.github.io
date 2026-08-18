@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Gift!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #fbf8fe;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        /* Floating background elements */
+        .bg-element {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 4s ease-in-out infinite alternate;
+        }
+        .bg-balloon-1 { top: 8%; left: 8%; font-size: 32px; animation-delay: 0s; }
+        .bg-balloon-2 { top: 12%; right: 10%; font-size: 28px; animation-delay: 1s; }
+        .bg-heart-1 { top: 25%; left: 5%; font-size: 20px; animation-delay: 2s; }
+        .bg-heart-2 {bottom: 20%; right: 6%; font-size: 22px; animation-delay: 1.5s; }
+        .bg-heart-3 { bottom: 10%; left: 10%; font-size: 30px; animation-delay: 1.3s; }
+        
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            z-index: 1;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 32px 24px;
+            box-shadow: 0 15px 35px rgba(138, 79, 255, 0.08);
+            text-align: center;
+            position: relative;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .halaman {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .halaman.active {
+            display: flex;
+        }
+
+        /* Typography */
+        .title-large {
+            font-size: 30px;
+            font-weight: 700;
+            color: #6b21a8;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .desc {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, #7e22ce, #9333ea);
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(147, 51, 234, 0.3);
+            transition: all 0.2s ease;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-purple:active {
+            transform: scale(0.96);
+            box-shadow: 0 4px 10px rgba(147, 51, 234, 0.2);
+        }
+
+        /* Memory Game */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            margin: 20px 0 25px 0;
+        }
+
+        .card-item {
+            aspect-ratio: 1;
+            background: #f1f5f9;
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s;
+            user-select: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .card-item.flipped {
+            background: #f3e8ff;
+            transform: rotateY(180deg);
+        }
+
+        .card-item.matched {
+            background: #e9d5ff;
+            cursor: default;
+        }
+
+        .moves-count {
+            font-size: 14px;
+            font-weight: 600;
+            color: #7e22ce;
+            margin-bottom: 10px;
+        }
+
+        /* Cake & Candle */
+        .cake-wrapper {
+            position: relative;
+            margin: 20px 0 25px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cake-emoji {
+            font-size: 80px;
+            line-height: 1;
+            position: relative;
+        }
+
+        .candle-flame {
+            font-size: 24px;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: flameFlicker 0.2s infinite alternate;
+            transition: opacity 0.5s ease;
+        }
+
+        .candle-flame.out {
+            opacity: 0;
+        }
+
+        @keyframes flameFlicker {
+            0% { transform: translateX(-50%) scale(1) rotate(-2deg); }
+            100% { transform: translateX(-50%) scale(1.15) rotate(2deg); }
+        }
+
+        /* Letter Section */
+        /* Animasi Kelinci Melompat */
+        .rabbit-avatar {
+        font-size: 70px;
+        margin-bottom: -15px;
+        z-index: 2;
+        position: relative;
+        display: inline-block;
+        animation: rabbitBounce 1.8s infinite ease-in-out;
+        }
+
+        @keyframes rabbitBounce {
+        0%, 100% {
+        transform: translateY(0) scale(1);
+        }
+          50% {
+        transform: translateY(-12px) scale(1.05); /* Kelinci melompat ke atas */
+    }
+        }
+
+        .letter-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 28px 22px;
+            box-shadow: 0 15px 35px rgba(138, 79, 255, 0.08);
+            text-align: left;
+            width: 100%;
+        }
+
+        .letter-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #6b21a8;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .letter-body {
+            font-size: 13.5px;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        /* Gallery Section */
+        .gallery-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .photo-card {
+            width: 100%;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            background: #fff;
+            padding: 8px;
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+            object-fit: cover;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-element bg-balloon-1">🎈</div>
+    <div class="bg-element bg-balloon-2">🎈</div>
+    <div class="bg-element bg-heart-1">💖</div>
+    <div class="bg-element bg-heart-2">💕</div>
+    <div class="bg-element bg-heart-3">🎉</div>
+
+    <div class="container">
+
+        <!-- STEP 1: WELCOME -->
+        <div id="step1" class="halaman active">
+            <div class="card">
+                <div class="title-large">Happy jawaday! ✨</div>
+                <div class="subtitle">I made this just for you! 💖</div>
+                <div class="desc">Play a little game to unlock your surprises</div>
+                <button class="btn-purple" onclick="nextStep(1, 2)">Start Game ➔</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: GAME -->
+        <div id="step2" class="halaman">
+            <div class="card">
+                <div class="title-large" style="font-size: 22px;">Let's play a little game before your surprise</div>
+                <div class="subtitle" style="font-size: 13px; margin-top: 4px;">Klik 2 kartu yang sama!</div>
+                <div class="moves-count">Moves: <span id="moves">0</span></div>
+
+                <div class="game-grid" id="gameGrid"></div>
+
+                <button id="btnNextGame" class="btn-purple hidden" onclick="nextStep(2, 3)">Lanjut ➔</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: CONGRATS -->
+        <div id="step3" class="halaman">
+            <div class="card">
+                <div style="font-size: 60px; margin-bottom: 10px;">🎉</div>
+                <div class="title-large">Yeayy Berhasil!</div>
+                <div class="subtitle" style="margin-bottom: 25px;">Sekarang saatnya make a wish! ✨</div>
+                <button class="btn-purple" onclick="nextStep(3, 4)">Lanjut ➔</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: MAKE A WISH -->
+        <div id="step4" class="halaman">
+            <div class="card">
+                <div class="title-large" style="font-size: 24px;">Make a Wish! 🎉</div>
+                
+                <div class="cake-wrapper">
+                    <div class="candle-flame" id="flame">🔥</div>
+                    <div class="cake-emoji">🎂</div>
+                </div>
+
+                <div class="subtitle" style="font-size: 14px; margin-bottom: 20px;">
+                    Tutup matamu, buat permintaan,<br>lalu tiup lilinnya! 😊
+                </div>
+
+                <button id="btnBlow" class="btn-purple" onclick="blowCandle()">💨 Tiup Lilin!</button>
+                <button id="btnNextWish" class="btn-purple hidden" onclick="nextStep(4, 5)">Lanjut ➔</button>
+            </div>
+        </div>
+
+        <!-- STEP 5: LETTER -->
+        <div id="step5" class="halaman">
+            <div class="rabbit-avatar">🐰</div>
+            <div class="letter-card">
+                <div class="letter-title">a wish for u on ur birthday</div>
+                <div class="letter-body" id="typewritertext">
+                    happy level up daayy! Happy birthday, pee! I'm really grateful to have you in my life—someone who understands me, supports me, and brings so much joy into my days. <br><br>
+                    Cheers to growing, laughing, and being chaotic together. I hope this year treats you kindly and gives you everything you've been wishing for. Enjoy your day, you deserve it! 💕
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn-purple" onclick="nextStep(5, 6)">Next ➔</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 6: GALLERY -->
+        <div id="step6" class="halaman">
+            <div class="card" style="padding: 24px 18px;">
+                <div class="title-large" style="color: #ec4899; font-size: 26px;">nih e-ktpnya! 🎀</div>
+                <div class="subtitle" style="font-size: 13.5px; margin-bottom: 15px;">
+                    hi, pretty gurl! Wishing you a life filled with love, joy, and cherish the moments that make you happy! 💕
+                </div>
+                <div class="gallery-container">
+                    <div class="photo-card">
+                        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&auto=format&fit=crop" alt="Moments 1">
+                    </div>
+                    <div class="photo-card">
+                        <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500&auto=format&fit=crop" alt="Moments 2">
+                    </div>
+                    <div class="photo-card">
+                        <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=500&auto=format&fit=crop" alt="Moments 3">
+                      <div style="margin-top: 20px;">
+                      <button class="btn-purple" onclick="nextStep(6, 7)">Lanjut ➔</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+   </div>
+
+          <!-- STEP 7: SLIDE BARU -->
+        <div id="step7" class="halaman">
+            <div class="card" style="padding: 24px 18px;">
+                <div class="title-large">Pesan Penutup ✨</div>
+                <div class="subtitle">Satu hal lagi buat kamu...</div>
+                <div class="desc">
+                    Terima kasih ya sudah jadi teman terbaik selama ini! Semoga semua impianmu di tahun ini tercapai! 🥳🎉
+                </div>
+                <!-- Tombol ini opsi untuk mengulang dari awal ke STEP 1 -->
+                <button class="btn-purple" onclick="nextStep(7, 1)">🔄 Ulangi dari Awal</button>
+        </div>
+
+        
+
+            
+  
+    <script>
+        // Navigation function
+        function nextStep(current,next) {
+            document.getElementById('step' + current).classList.remove('active');
+            document.getElementById('step' + next).classList.add('active');
+
+            if (next === 2) {
+                initGame();
+            }
+            if (next === 3 || next === 6 || next === 7) {
+                triggerConfetti();
+            }
+        }
+
+        // Confetti Effect
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // Candle Blowing Logic
+        function blowCandle() {
+            document.getElementById('flame').classList.add('out');
+            document.getElementById('btnBlow').classList.add('hidden');
+            document.getElementById('btnNextWish').classList.remove('hidden');
+            triggerConfetti();
+        }
+
+        // Memory Game Logic
+        const icons = ['💖', '🎈', '🎁', '💖', '🎈', '🎁'];
+        let flippedCards = [];
+        let matchedCount = 0;
+        let moves = 0;
+
+        function initGame() {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            flippedCards = [];
+            matchedCount = 0;
+            moves = 0;
+            document.getElementById('moves').innerText = '0';
+            document.getElementById('btnNextGame').classList.add('hidden');
+
+            // Shuffle array
+            const shuffled = [...icons].sort(() => 0.5 - Math.random());
+
+            shuffled.forEach((icon, index) => {
+                const card = document.createElement('div');
+                card.className = 'card-item';
+                card.dataset.icon = icon;
+                card.dataset.index = index;
+                card.innerText = '❓';
+                card.onclick = () => onCardClick(card);
+                grid.appendChild(card);
+            });
+        }
+
+        function onCardClick(card) {
+            if (card.classList.contains('flipped') || card.classList.contains('matched') || flippedCards.length >= 2) {
+                return;
+            }
+
+            card.classList.add('flipped');
+            card.innerText = card.dataset.icon;
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                moves++;
+                document.getElementById('moves').innerText = moves;
+
+                const [card1, card2] = flippedCards;
+                if (card1.dataset.icon === card2.dataset.icon) {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    flippedCards = [];
+                    matchedCount += 2;
+
+                    if (matchedCount === icons.length) {
+                        setTimeout(() => {
+                            document.getElementById('btnNextGame').classList.remove('hidden');
+                            triggerConfetti();
+                        }, 300);
+                    }
+                } else {
+                    setTimeout(() => {
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                        card1.innerText = '❓';
+                        card2.innerText = '❓';
+                        flippedCards = [];
+                    }, 800);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
