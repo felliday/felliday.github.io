@@ -338,15 +338,39 @@
             <div class="rabbit-avatar">🐰</div>
             <div class="letter-card">
                 <div class="letter-title">a wish for u on ur birthday</div>
-                <div class="letter-body" id="typewritertext">
-                    happy level up daayy! Happy birthday, pee! I'm really grateful to have you in my life—someone who understands me, supports me, and brings so much joy into my days. <br><br>
-                    Cheers to growing, laughing, and being chaotic together. I hope this year treats you kindly and gives you everything you've been wishing for. Enjoy your day, you deserve it! 💕
-                </div>
+                <div class="letter-body" id="teks-mengetik"></div>
                 <div style="text-align: center;">
                     <button class="btn-purple" onclick="nextStep(5, 6)">Next ➔</button>
                 </div>
             </div>
         </div>
+        <script>
+            // 1. Siapkan variabel
+            const elemenTeks = document.getElementById("teks-mengetik");
+            const teksUtuh = `happy level up daayy! Happy birthday, pee! I'm really grateful to have you in my life—someone who understands me, supports me, and brings so much joy into my days.
+                              Cheers to growing, laughing, and being chaotic together. I hope this year treats you kindly and gives you everything you've been wishing for. Enjoy your day, you deserve it! 💕 `;
+            let indeks = 0;
+            const kecepatan = 50; // Kecepatan mengetik dalam milidetik (ms)
+
+            // 2. Buat fungsi mengetik
+            function ketik() {
+            // Cek apakah indeks saat ini masih kurang dari panjang teks
+            if (indeks < teksUtuh.length) {
+                // Tambahkan satu huruf ke dalam elemen HTML
+                elemenTeks.innerHTML += teksUtuh.charAt(indeks);
+                indeks++;
+                
+                // Panggil fungsi ini lagi setelah jeda waktu 'kecepatan'
+                setTimeout(ketik, kecepatan);
+            }
+            }
+
+            // 3. Jalankan fungsinya
+            const next = document.querySelector('#btnNextWish');
+            next.addEventListener('click', () => {
+                ketik();
+            });
+        </script>
 
         <!-- STEP 6: GALLERY -->
         <div id="step6" class="halaman">
