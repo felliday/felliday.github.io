@@ -307,6 +307,15 @@
             color: #8b3dff;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
+
+        .desc .sub-text {
+            color: #ff6b6b; /* Ganti dengan warna yang Anda inginkan */
+            font-style: italic;         /* Membuat teks miring */
+            font-size: 14px;            /* Sedikit lebih kecil agar rapi */
+            display: block;             /* Membuatnya pindah ke baris baru */
+            margin-top: 5px;
+        }
+        
     </style>    
 </head>
 <body>
@@ -325,7 +334,7 @@
                 <div class="title-large">Happy felliday✨</div>
                 <div class="subtitle">I made this just for you! 💖</div>
                 <div class="desc">Play a little game to unlock your surprises🥳
-                (before click start,turn on the music in the bottom left corner)</div>
+                <span class="sub-text">(before click start,turn on the music in the bottom left corner)</div>
                 <button class="btn-purple" onclick="nextStep(1, 2)">Start Game ➔</button>
             </div>
         </div>
@@ -530,7 +539,7 @@
         }
 
         // Memory Game Logic
-        const icons = ['💖', '🎈', '🎁', '💖', '🎈', '🎁', '🎉', '🎂', '🎉', '🎂'];
+        const icons = ['💖', '🎈', '🎁', '💖', '🎈', '🎁', '🎉', '🎂', '🎉', '🎂', '🌟', '🌟'];
         let flippedCards = [];
         let matchedCount = 0;
         let moves = 0;
